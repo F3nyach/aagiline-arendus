@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Comment;
+use App\User;
+use App\Post;
 
 class CommentSeeder extends Seeder
 {
@@ -11,8 +14,9 @@ class CommentSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Post::class, 50)->make()->each(function ($comment){
+        factory(Comment::class, 25)->make()->each(function ($comment) {
             $comment->user_id = User::inRandomOrder()->first()->id;
+            $comment->post_id = Post::inRandomOrder()->first()->id;
             $comment->save();
         });
     }

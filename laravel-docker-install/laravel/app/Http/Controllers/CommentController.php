@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\Post;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -14,8 +15,12 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $comments = Comment::with('user')->get();
-        return $comments;
+//        $comment = Comment::with('user')->get();
+//        return $comment;
+
+        $comment = Comment::all();
+        return $comment;
+
     }
 
     /**
@@ -34,17 +39,20 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Post $post)
     {
         $comment = new Comment();
-        if($request->has('title') && $request->has('body')){
+
+        if($request->has('title') && $request->has('body')) {
             $comment->title = $request->input('title');
-            $comment->body= $request->input('body');
+            $comment->body = $request->input('body');
             $comment->user_id = 1;
+            $comment->post_id = $post->id;
             $comment->save();
-            return $comment;
+            return  $comment;
         }
-        return response()->json(['error' => 'invalid parameters provided']);
+
+        return response()->json(['error'=>'invalid parameter provides'], 400);
     }
 
     /**
@@ -55,7 +63,8 @@ class CommentController extends Controller
      */
     public function show(Comment $comment)
     {
-        return $comment->load('user');
+        //$comment = Comment::findOrFail($id);
+        return $comment;
     }
 
     /**
@@ -78,15 +87,18 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        if($request->has('title')){
+        if($request->has('title')) {
             $comment->title = $request->input('title');
         }
-        if($request->has('body')){
+
+        if($request->has('body')) {
             $comment->body = $request->input('body');
         }
+
         if($comment->isDirty()){
             $comment->save();
         }
+
         return $comment;
     }
 
@@ -99,6 +111,6 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         $comment->delete();
-        return response()->json(['status' => 'OK']);
+        return response()->json(['status'=>'OK']);
     }
 }

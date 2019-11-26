@@ -18,12 +18,20 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resources(['comments' => 'CommentController']);
+Route::resources(['posts'=>'PostController']);
+//Route::resources(['comments'=>'CommentController']);
 
-// need 5 route rida all on üks variant
+//show->postituse kõik kommentaarid
+//
+
+Route::resources(['comments'=>'CommentController']);
+Route::post('/posts/{post}/comments', 'CommentController@store');
+Route::get('/posts/{post}/comments', 'CommentController@show');
+
 //Route::get('/posts', 'PostController@index');
 //Route::get('/posts/{post}', 'PostController@show');
-//Route::post('/posts', 'Postcontroller@store');
+//Route::post('/posts', 'PostController@store');
 //Route::patch('/posts/{post}', 'PostController@update');
 //Route::delete('/posts/{post}', 'PostController@destroy');
-Route::resources(['posts' => 'PostController']); // võib aga sama asja ühe reaga teha
+
+

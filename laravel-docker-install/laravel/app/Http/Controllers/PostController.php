@@ -18,23 +18,25 @@ class PostController extends Controller
         return $posts;
     }
 
+
     /**
-     * Show the form for creating a new resource.
+     * Store a newly created resource in storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-
     public function store(Request $request)
     {
         $post = new Post();
-        if($request->has('title') && $request->has('body')){
+        if($request->has('title') && $request->has('body')) {
             $post->title = $request->input('title');
-            $post->body= $request->input('body');
+            $post->body = $request->input('body');
             $post->user_id = 1;
             $post->save();
-            return $post;
+            return  $post;
         }
-        return response()->json(['error' => 'invalid parameters provided']);
+
+        return response()->json(['error'=>'invalid parameter provides'], 400);
     }
 
     /**
@@ -48,24 +50,28 @@ class PostController extends Controller
         return $post->load('user');
     }
 
+
     /**
-     * Show the form for editing the specified resource.
+     * Update the specified resource in storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-
     public function update(Request $request, Post $post)
     {
-        if($request->has('title')){
+        if($request->has('title')) {
             $post->title = $request->input('title');
         }
-        if($request->has('body')){
+
+        if($request->has('body')) {
             $post->body = $request->input('body');
         }
+
         if($post->isDirty()){
             $post->save();
         }
+
         return $post;
     }
 
@@ -78,6 +84,6 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
-        return response()->json(['status' => 'OK']);
+        return response()->json(['status'=>'OK']);
     }
 }
